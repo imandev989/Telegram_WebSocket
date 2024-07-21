@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const NamespaceRouter = require("./routes/Namespace");
 
 const app = express();
@@ -10,6 +11,9 @@ app.use(express.json({ limit: "50mb" }));
 //* CORS Policy
 
 //* Template Engine
+
+//* Static Folder
+app.use(express.static(path.join(__dirname, "public")));
 
 //* Routes
 app.use("/api/namespaces", NamespaceRouter);
