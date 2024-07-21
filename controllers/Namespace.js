@@ -31,3 +31,37 @@ exports.create = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.createRoom = async (req, res, next) => {
+  try {
+    const { title, namespace } = req.body;
+
+    const mainNamespace = await NamespaceModel.findOne({ href: namespace });
+
+    if (!mainNamespace) {
+      return res.status(400).json({ message: "Namespace not found !!" });
+    }
+
+    const mainRoom = await NamespaceModel.findOne({ "rooms.title": title });
+    if (mainRoom) {
+      return res.status(400).json({ message: "Room already exist !!" });
+    }
+
+    const room = { title, image: "Test Img" };
+
+    await NamespaceModel.findOneAndUpdate(
+      { href: namespace },
+      {
+        $push: {
+          rooms: room,
+        },
+      }
+    );
+
+    return res
+      .status(201)
+      .json({ message: "New Room created successfully :))" });
+  } catch (err) {
+    next(err);
+  }
+};
